@@ -1,46 +1,34 @@
-# Contributing to Simplyicard Infrastructure
+# Developer Guide: Infrastructure Modules
 
-Welcome to the team! This guide will help you get started with contributing to our infrastructure.
+## The "Contract" Approach
+To ensure smooth integration, we have **pre-defined the variables and outputs** for all modules (RDS, ECS, etc.).
 
-## Workflow
+**What this means:**
+- You do NOT need to change `variables.tf` or `prod/main.tf`.
+- You ONLY need to implement the logic in your module's `main.tf`.
 
-We follow a standard **Feature Branch Workflow**:
+## How to Work
 
-1.  **Clone the Repo**:
-    ```bash
-    git clone https://github.com/icard3/Simplyicard.git
-    cd Simplyicard/simplyicard-infra
-    ```
+### 1. ECS Developer
+Your module is located at `terraform/modules/ecs`.
+- **Inputs Provided**: `vpc_id`, `public_subnet_ids`, `private_subnet_ids`, `cluster_name`.
+- **Your Job**:
+    1. Open `terraform/modules/ecs/main.tf`.
+    2. Define your resources (`aws_ecs_cluster`, `aws_ecs_service`, etc.).
+    3. Use the variables provided (e.g. `var.vpc_id`).
+    4. Ensure you export `cluster_id` in `outputs.tf`.
 
-2.  **Create a Branch**:
-    Always create a new branch for your work. Do not push directly to `main`.
-    ```bash
-    git checkout -b feature/my-new-module
-    ```
+### 2. RDS Developer
+Your module is located at `terraform/modules/rds`.
+- **Inputs Provided**: `vpc_id`, `private_subnet_ids`, `db_username`, `db_password`.
+- **Your Job**:
+    1. Open `terraform/modules/rds/main.tf`.
+    2. Create `aws_db_instance` and `aws_db_subnet_group`.
+    3. Use `var.private_subnet_ids` for the subnet group.
 
-3.  **Make Changes**:
-    - Edit the Terraform files in `terraform/modules/` or `terraform/prod/`.
-    - Ensure you follow the existing style.
-
-4.  **Format and Validate**:
-    Before committing, run:
-    ```bash
-    terraform fmt -recursive
-    terraform validate
-    ```
-
-5.  **Commit and Push**:
-    ```bash
-    git add .
-    git commit -m "Add new ECS service"
-    git push origin feature/my-new-module
-    ```
-
-6.  **Pull Request (PR)**:
-    - Open a PR on GitHub.
-    - The CI pipeline (`build.yml`) will automatically run checks.
-    - Wait for approval from the lead before merging.
-
-## Directory Structure
-- `terraform/modules/`: Reusable code. **Edit this to change how resources are created.**
-- `terraform/prod/`: The live environment. **Edit this to change parameters (e.g., instance count).**
+##  Testing Your Changes
+1. Create a branch: `feature/ecs-implementation`.
+2. Write your code in `terraform/modules/ecs/main.tf`.
+3. Push to GitHub.
+4. Open a Pull Request.
+5. **GitHub Actions** will automatically run `terraform plan` using the production config to verify your code works with the rest of the infrastructure.

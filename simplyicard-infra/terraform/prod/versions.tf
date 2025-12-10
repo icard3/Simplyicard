@@ -1,6 +1,22 @@
-# TODO: Define Terraform version and providers here
-# terraform {
-#   required_providers {
-#     aws = ...
-#   }
-# }
+terraform {
+  required_version = ">= 1.5.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+  
+  default_tags {
+    tags = {
+      Project     = "Simplyicard"
+      Environment = "Production"
+      ManagedBy   = "Terraform"
+    }
+  }
+}

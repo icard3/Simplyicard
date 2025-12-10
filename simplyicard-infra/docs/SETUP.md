@@ -1,43 +1,53 @@
-# Project Setup Guide
+# Project Setup & Workflow Guide
 
 ## Prerequisites
-- **AWS CLI**: Install and configure with your aws credentials (`aws configure`).
-- **Terraform**: Install (v1.0+).
-- **Git**: Install.
+- **Git**: Install and configure.
+- **GitHub Account**: Access to the `Simplyicard` repository.
+- **Terraform** (Optional): Useful for local validation (`terraform validate`), but **deployments are now automated**.
 
-## 1. Initial Setup (One-Time Only)
-**Who will run this?** The team member with AWS Admin access 
 
-To enable Terraform to store its state securely, we need an S3 bucket and DynamoDB table.
-1.  **Clone the repo** (if not already done).
-2.  Navigate to `terraform/bootstrap/`.
-3.  Run `terraform init`.
-4.  Run `terraform apply`.
-    -IMPORTANT DO NOT SKIP
-    - It will create the S3 bucket and DynamoDB table in AWS.
-5.  **Check Outputs**:
-    - After the command finishes, it will show the `s3_bucket_name` and `dynamodb_table_name` in the terminal.
-6.  **Update Configuration**:
-    - Open `terraform/prod/backend.tf`.
-    - Check if the `bucket` and `dynamodb_table` values match what you just saw in the terminal.
-    - If they are different, update the file to match the real values.
-    - Commit and push the changes to GitHub.
+ Do not run `terraform apply` from your local machine anymore. 
+All deployments to Anil's Production account are now handled automatically by GitHub Actions.
 
-## 2. Working with Production
-1. Navigate to the production directory:
-   ```bash
-   cd terraform/prod
-   ```
-2. Initialize Terraform (this downloads providers and connects to the backend):
-   ```bash
-   terraform init
-   ```
-3. Check what will be created:
-   ```bash
-   terraform plan
-   ```
-4. Apply changes (only if you are sure!):
-   ```bash
-   terraform apply
-   ```
+### How to Contribute (For Everyone)
 
+1.  **Get the Code**:
+    ```bash
+    git clone https://github.com/icard3/Simplyicard.git
+    cd simplyicard-infra
+    ```
+
+2.  **Create a Branch**:
+    Never push directly to `main`.
+    ```bash
+    git checkout -b feature/my-new-feature
+    ```
+
+3.  **Make Changes**:
+    - Edit Terraform files in `terraform/modules/` or `terraform/prod/`.
+    - Run `terraform fmt -recursive` to format your code.
+
+4.  **Push & Review**:
+    ```bash
+    git add .
+    git commit -m "Added RDS module"
+    git push origin feature/my-new-feature
+    ```
+    - Go to GitHub and create a **Pull Request (PR)**.
+    - **Check the Actions Tab**: GitHub will automatically run `terraform plan` to show you what *would* happen.
+
+5.  **Deploy**:
+    - Once the Team Lead approves and merges the PR into `main`, GitHub Actions will populate the changes to the Production AWS account automatically.
+
+## Troubleshooting
+
+### "Multi-Account" Setup
+- **Do NOT** use your personal AWS access keys to deploy `prod`.
+- The CI/CD pipeline uses a special "OIDC" role (`AWS_ROLE_ARN`) to authenticate securely with Anil's account.
+
+### Local Destruction
+If you previously ran `terraform apply` on your personal machine (especially Udayasri), you **MUST** run:
+```bash
+terraform destroy
+```
+...using your personal credentials to clean up your own account.
