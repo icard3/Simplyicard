@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'terraform/**'
+      - 'simplyicard-infra/terraform/**'
 
 permissions:
   id-token: write 
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform/prod
+        working-directory: ./simplyicard-infra/terraform/prod
 
     steps:
       - name: Checkout Code
