@@ -23,3 +23,16 @@ module "ecs" {
   public_subnet_ids  = module.vpc.public_subnet_ids
   private_subnet_ids = module.vpc.private_subnet_ids
 }
+
+module "alb" {
+  source = "../modules/alb"
+
+  vpc_id            = module.vpc.vpc_id
+  public_subnet_ids = module.vpc.public_subnet_ids
+}
+
+module "ecr" {
+  source = "../modules/ecr"
+
+  repository_names = ["simplyicard-backend", "simplyicard-frontend"]
+}

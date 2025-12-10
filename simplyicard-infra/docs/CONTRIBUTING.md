@@ -26,6 +26,20 @@ Your module is located at `terraform/modules/rds`.
     2. Create `aws_db_instance` and `aws_db_subnet_group`.
     3. Use `var.private_subnet_ids` for the subnet group.
 
+### 3. ALB Developer
+Your module is located at `terraform/modules/alb`.
+- **Inputs Provided**: `vpc_id`, `public_subnet_ids`.
+- **Your Job**:
+    1. Create `aws_lb`, `aws_lb_target_group`, `aws_lb_listener`.
+    2. Export `alb_dns_name` and `target_group_arn` in `outputs.tf`.
+
+### 4. ECR Developer
+Your module is located at `terraform/modules/ecr`.
+- **Inputs Provided**: `repository_names` (list).
+- **Your Job**:
+    1. Use `for_each` to create multiple `aws_ecr_repository` resources.
+    2. Export the repository URLs.
+
 ##  Testing Your Changes
 1. Create a branch: `feature/ecs-implementation`.
 2. Write your code in `terraform/modules/ecs/main.tf`.
