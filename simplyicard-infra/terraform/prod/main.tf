@@ -36,3 +36,20 @@ module "ecr" {
 
   repository_names = ["simplyicard-backend", "simplyicard-frontend"]
 }
+
+module "securityhub" {
+  source = "../modules/securityhub"
+}
+
+module "guardduty" {
+  source = "../modules/guardduty"
+}
+
+module "cloudtrail" {
+  source = "../modules/cloudtrail"
+  s3_bucket_name = "simplyicard-cloudtrail-logs-prod"
+}
+
+module "config" {
+  source = "../modules/config"
+}

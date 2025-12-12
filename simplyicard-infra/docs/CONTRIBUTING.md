@@ -40,9 +40,27 @@ Your module is located at `terraform/modules/ecr`.
     1. Use `for_each` to create multiple `aws_ecr_repository` resources.
     2. Export the repository URLs.
 
+### 5. Security Developer (SecurityHub, GuardDuty, Config, CloudTrail)
+Your modules are located in `terraform/modules/`.
+- **Inputs Provided**: Mostly defaults. `cloudtrail` accepts `s3_bucket_name`.
+- **Your Job**:
+    1. **Security Hub**: Enable `aws_securityhub_account` and standards.
+    2. **GuardDuty**: Enable `aws_guardduty_detector`.
+    3. **Config**: Setup `aws_config_configuration_recorder`.
+    4. **CloudTrail**: Create `aws_cloudtrail` and the logging S3 bucket.
+
 ##  Testing Your Changes
-1. Create a branch: `feature/ecs-implementation`.
-2. Write your code in `terraform/modules/ecs/main.tf`.
-3. Push to GitHub.
-4. Open a Pull Request.
-5. **GitHub Actions** will automatically run `terraform plan` using the production config to verify your code works with the rest of the infrastructure.
+
+### 1. Local Validation (Syntax Check)
+Before pushing, run these commands inside your module folder (e.g. `terraform/modules/ecs`) to ensure your code is syntactically correct:
+```bash
+terraform init
+terraform validate
+```
+*Note: Do NOT run `terraform plan` here. It will fail because it lacks the production inputs.*
+
+### 2. Remote Verification (Logic Check)
+1. Push your branch to GitHub.
+2. Open a **Pull Request**.
+3. **GitHub Actions** will automatically run `terraform plan` using the production config.
+4. Review the "Actions" tab to see exactly what resources will be created.
