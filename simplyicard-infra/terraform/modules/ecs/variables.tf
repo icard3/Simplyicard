@@ -24,3 +24,21 @@ variable "container_image" {
   type        = string
   default     = "nginx:latest" # Placeholder default
 }
+
+variable "desired_capacity" {
+  description = "Desired EC2 capacity for ECS cluster"
+  type        = number
+  default     = 1
+}
+
+variable "min_size" {
+  description = "Minimum EC2 instances for ECS cluster"
+  type        = number
+  default     = 1
+}
+
+variable "max_size" {
+  description = "Maximum EC2 instances for ECS cluster"
+  type        = number
+  default     = 3
+}
