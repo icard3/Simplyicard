@@ -9,7 +9,7 @@ resource "aws_cloudwatch_log_group" "service" {
 # Example metric filter: ALB 5xx errors
 resource "aws_cloudwatch_log_metric_filter" "alb_5xx" {
   name           = "alb-5xx-${var.env}"
-  log_group_name = aws_cloudwatch_log_group.service["web"].name
+  log_group_name = aws_cloudwatch_log_group.service[each.key].name
   pattern        = "{ ($.elb_status_code = 5*) }"
 
   metric_transformation {
@@ -24,7 +24,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx_alarm" {
   alarm_name          = "alb-5xx-high-${var.env}"
   namespace           = "AWS/ApplicationELB"
   metric_name         = "HTTPCode_Target_5XX_Count"
-  dimensions          = { LoadBalancer = "app-alb-${var.env}" }
+  dimensions          = { LoadBalancer = "simplyicard-alb" }
   comparison_operator = "GreaterThanThreshold"
   threshold           = 50
   period              = 60
