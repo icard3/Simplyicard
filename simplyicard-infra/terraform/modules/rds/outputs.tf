@@ -1,15 +1,15 @@
 output "db_endpoint" {
   description = "The connection endpoint for the database"
-  value       = "" # Placeholder until implementation
+  value       = aws_db_instance.rds_instance.endpoint
 }
 
 output "db_port" {
   description = "The port the database is listening on"
-  value       = 5432 # Placeholder
+  value       = 3306
 }
 
 output "db_name" {
   description = "The name of the database"
-  value       = var.db_name
+  value       = aws_db_instance.rds_instance.db_name
 }
 
