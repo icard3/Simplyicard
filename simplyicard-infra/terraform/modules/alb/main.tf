@@ -45,10 +45,11 @@ resource "aws_lb" "alb" {
 
 # TARGET GROUP
 resource "aws_lb_target_group" "tg" {
-  name     = "simplyicard-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
+  name        = "simplyicard-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
 
   health_check {
     path                = "/"
