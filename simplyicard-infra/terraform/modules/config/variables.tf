@@ -1,1 +1,4 @@
-# No variables required for basic enablement
+variable "config_bucket_name" {
+  type        = string
+  description = "S3 bucket name for AWS Config logs"
+}
