@@ -54,4 +54,5 @@ module "cloudtrail" {
 
 module "config" {
   source = "../modules/config"
+  config_bucket_name = "simplyricard-config-logs-prod"
 }
