@@ -24,3 +24,37 @@ variable "container_image" {
   type        = string
   default     = "nginx:latest" # Placeholder default
 }
+
+variable "desired_capacity" {
+  description = "Desired EC2 capacity for ECS cluster"
+  type        = number
+  default     = 1
+}
+
+variable "min_size" {
+  description = "Minimum EC2 instances for ECS cluster"
+  type        = number
+  default     = 1
+}
+
+variable "max_size" {
+  description = "Maximum EC2 instances for ECS cluster"
+  type        = number
+  default     = 3
+}
+
+variable "instance_type" {
+  description = "EC2 instance type for ECS Cluster"
+  type        = string
+  default     = "t3.small"
+}
+
+variable "target_group_arn" {
+  description = "The ARN of the ALB target group"
+  type        = string
+}
+
+variable "alb_security_group_id" {
+  description = "The ID of the ALB security group"
+  type        = string
+}
