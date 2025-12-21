@@ -10,12 +10,15 @@ on:
   pull_request:
     branches:
       - main
-    paths:
       - 'simplyicard-infra/terraform/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  id-token: write 
-  contents: read  
+  id-token: write
+  contents: read
 
 jobs:
   terraform:
