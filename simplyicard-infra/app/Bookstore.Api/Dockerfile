@@ -1,9 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["Bookstore.Api/Bookstore.Api.csproj", "Bookstore.Api/"]
-RUN dotnet restore "Bookstore.Api/Bookstore.Api.csproj"
+COPY ["Bookstore.Api.csproj", "./"]
+RUN dotnet restore "Bookstore.Api.csproj"
 COPY . .
-WORKDIR "/src/Bookstore.Api"
 RUN dotnet build "Bookstore.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

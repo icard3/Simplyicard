@@ -24,6 +24,7 @@ module "ecs" {
   private_subnet_ids    = module.vpc.private_subnet_ids
   target_group_arn      = module.alb.target_group_arn
   alb_security_group_id = module.alb.alb_security_group_id
+  container_image       = "${module.ecr.repository_urls["simplyicard-app"]}:latest"
 
   container_environment = [
     {
