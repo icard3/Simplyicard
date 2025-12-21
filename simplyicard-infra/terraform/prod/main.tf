@@ -50,8 +50,9 @@ module "ecr" {
 module "frontend" {
   source = "../modules/frontend"
 
-  bucket_name = "simplyicard-bookstore-frontend-prod"
-  environment = "prod"
+  bucket_name  = "simplyicard-bookstore-frontend-prod"
+  environment  = "prod"
+  alb_dns_name = module.alb.alb_dns_name
 }
 
 module "securityhub" {

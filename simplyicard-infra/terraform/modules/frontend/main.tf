@@ -7,6 +7,8 @@ resource "aws_s3_bucket" "frontend" {
     Name        = var.bucket_name
     Environment = var.environment
   }
+
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
@@ -58,6 +60,18 @@ resource "aws_cloudfront_distribution" "frontend" {
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend.id
   }
 
+  origin {
+    domain_name = var.alb_dns_name
+    origin_id   = "ALB-Backend"
+
+    custom_origin_config {
+      http_port                = 80
+      https_port               = 443
+      origin_protocol_policy   = "http-only"
+      origin_ssl_protocols     = ["TLSv1.2"]
+    }
+  }
+
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
@@ -75,6 +89,27 @@ resource "aws_cloudfront_distribution" "frontend" {
     response_code         = 200
     response_page_path    = "/index.html"
     error_caching_min_ttl = 10
+  }
+
+  # API Cache Behavior
+  ordered_cache_behavior {
+    path_pattern     = "/api/*"
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "ALB-Backend"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["*"]
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
   }
 
   default_cache_behavior {

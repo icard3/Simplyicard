@@ -11,6 +11,8 @@ resource "aws_ecr_repository" "ecr" {
     Name        = each.value
     Environment = "simplyicard-app.environment"
   }
+
+  force_delete = true
 }
 
 resource "aws_ecr_lifecycle_policy" "ecr_policy" {
