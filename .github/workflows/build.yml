@@ -1,4 +1,60 @@
-# TODO: Define GitHub Actions workflow for building and pushing Docker image
-# name: Build and Push
-# on: ...
-# jobs: ...
+name: Build and Deploy App
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'simplyicard-infra/app/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # --- BACKEND DEPLOYMENT ---
+      - name: Build, tag, and push Backend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: simplyicard-app
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./simplyicard-infra/app/Bookstore.Api
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Update ECS Service
+        run: |
+          aws ecs update-service --cluster simplyicard-cluster --service simplyicard-cluster-service --force-new-deployment
+
+      # --- FRONTEND DEPLOYMENT ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Frontend
+        working-directory: ./simplyicard-infra/app/bookstore-frontend
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy Frontend to S3
+        run: |
+          aws s3 sync ./simplyicard-infra/app/bookstore-frontend/build/ s3://simplyicard-bookstore-frontend-prod --delete

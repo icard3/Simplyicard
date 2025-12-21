@@ -1,0 +1,6 @@
+@echo off 
+echo Building React app... 
+npm run build 
+echo Deploying to S3... 
+aws s3 sync build/ s3://bookstore-frontend-bucket-2025 --delete 
+echo Done! 

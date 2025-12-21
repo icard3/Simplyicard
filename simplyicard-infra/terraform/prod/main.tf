@@ -24,6 +24,13 @@ module "ecs" {
   private_subnet_ids    = module.vpc.private_subnet_ids
   target_group_arn      = module.alb.target_group_arn
   alb_security_group_id = module.alb.alb_security_group_id
+
+  container_environment = [
+    {
+      name  = "DB_CONNECTION_STRING"
+      value = "server=${element(split(":", module.rds.db_endpoint), 0)};port=${module.rds.db_port};database=simplyicard;user=${var.db_username};password=${var.db_password};"
+    }
+  ]
 }
 
 module "alb" {
@@ -37,6 +44,13 @@ module "ecr" {
   source = "../modules/ecr"
 
   repository_names = ["simplyicard-app"]
+}
+
+module "frontend" {
+  source = "../modules/frontend"
+
+  bucket_name = "simplyicard-bookstore-frontend-prod"
+  environment = "prod"
 }
 
 module "securityhub" {

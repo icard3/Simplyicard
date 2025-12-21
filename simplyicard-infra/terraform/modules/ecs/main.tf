@@ -119,6 +119,7 @@ resource "aws_ecs_task_definition" "app" {
       containerPort = 80
       hostPort      = 80
     }]
+    environment = var.container_environment
   }])
 }
 

@@ -13,6 +13,15 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
+variable "container_environment" {
+  description = "Environment variables for the container"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = []
+}
+
 variable "cluster_name" {
   description = "Name of the ECS cluster"
   type        = string

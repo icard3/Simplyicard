@@ -1,0 +1,23 @@
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# .NET Build Artifacts
+bin/
+obj/
+publish/
+
+# User-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE files
+.vs/
+.vscode/
+
+# Environment secrets (example)
+appsettings.Development.json
+appsettings.Local.json
