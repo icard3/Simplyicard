@@ -18,6 +18,10 @@ resource "aws_launch_template" "ecs_lt" {
   image_id      = data.aws_ami.ecs_ami.id
   instance_type = var.instance_type
 
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ecs_node.name
+  }
+
   user_data = base64encode(templatefile("${path.module}/ecs-user-data.sh", {
     cluster_name = var.cluster_name
   }))
@@ -82,6 +86,33 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+
+# ECS Node Role (for EC2 instances)
+
+resource "aws_iam_role" "ecs_node_role" {
+  name = "${var.cluster_name}-node-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_node_attachment" {
+  role       = aws_iam_role.ecs_node_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_instance_profile" "ecs_node" {
+  name = "${var.cluster_name}-instance-profile"
+  role = aws_iam_role.ecs_node_role.name
+}
 
 # ECS Task Role
 
