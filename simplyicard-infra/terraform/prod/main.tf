@@ -30,6 +30,10 @@ module "ecs" {
     {
       name  = "DB_CONNECTION_STRING"
       value = "server=${element(split(":", module.rds.db_endpoint), 0)};port=${module.rds.db_port};database=simplyicard;user=${var.db_username};password=${var.db_password};"
+    },
+    {
+      name  = "ASPNETCORE_URLS"
+      value = "http://+:8080"
     }
   ]
 }

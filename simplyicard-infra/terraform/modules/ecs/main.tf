@@ -147,8 +147,8 @@ resource "aws_ecs_task_definition" "app" {
     name  = "app"
     image = var.container_image
     portMappings = [{
-      containerPort = 80
-      hostPort      = 80
+      containerPort = 8080
+      hostPort      = 8080
     }]
     environment = var.container_environment
   }])
@@ -172,7 +172,7 @@ resource "aws_ecs_service" "app" {
   load_balancer {
     target_group_arn = var.target_group_arn
     container_name   = "app"
-    container_port   = 80
+    container_port   = 8080
   }
 
   depends_on = [
@@ -189,8 +189,8 @@ resource "aws_security_group" "ecs_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 8080
+    to_port         = 8080
     protocol        = "tcp"
     security_groups = [var.alb_security_group_id]
   }
