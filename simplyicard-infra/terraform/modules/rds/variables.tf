@@ -9,9 +9,15 @@ variable "private_subnet_ids" {
 }
 
 variable "db_name" {
-  description = "Name of the database"
+  description = "The name of the database to create"
   type        = string
   default     = "simplyicard"
+}
+
+variable "vpn_client_cidr_block" {
+  description = "CIDR block assigned to VPN clients"
+  type        = string
+  default     = ""
 }
 
 variable "db_username" {

@@ -10,3 +10,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "vpn_client_cidr_block" {
+  description = "CIDR block assigned to VPN clients"
+  type        = string
+  default     = "10.100.0.0/22"
+}

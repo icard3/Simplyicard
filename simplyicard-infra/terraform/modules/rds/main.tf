@@ -25,6 +25,13 @@ resource "aws_security_group" "rds_sg" {
     cidr_blocks = ["10.0.0.0/16"] # Allow internal VPC traffic
   }
 
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = var.vpn_client_cidr_block != "" ? [var.vpn_client_cidr_block] : []
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

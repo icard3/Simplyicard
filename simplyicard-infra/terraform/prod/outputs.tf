@@ -12,3 +12,16 @@ output "rds_endpoint" {
   description = "The connection endpoint for the RDS database"
   value       = module.rds.db_endpoint
 }
+
+output "vpn_dns_name" {
+  value = module.vpn.vpn_dns_name
+}
+
+output "vpn_client_cert" {
+  value = module.vpn.client_cert_pem
+}
+
+output "vpn_client_key" {
+  value     = module.vpn.client_private_key_pem
+  sensitive = true
+}

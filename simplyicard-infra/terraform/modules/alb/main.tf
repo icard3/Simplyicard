@@ -8,14 +8,14 @@ resource "aws_security_group" "alb_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.vpn_client_cidr_block != "" ? [var.vpn_client_cidr_block] : ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.vpn_client_cidr_block != "" ? [var.vpn_client_cidr_block] : ["0.0.0.0/0"]
   }
 
   egress {
@@ -34,9 +34,9 @@ resource "aws_security_group" "alb_sg" {
 resource "aws_lb" "alb" {
   name               = "simplyicard-alb"
   load_balancer_type = "application"
-  internal           = false
+  internal           = true
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = var.public_subnet_ids
+  subnets            = var.private_subnet_ids != [] ? var.private_subnet_ids : var.public_subnet_ids
 
   tags = {
     Name = "simplyicard-alb"

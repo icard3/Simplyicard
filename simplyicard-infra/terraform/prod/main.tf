@@ -10,10 +10,11 @@ module "vpc" {
 module "rds" {
   source = "../modules/rds"
 
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnet_ids
-  db_username        = var.db_username
-  db_password        = var.db_password
+  vpc_id                = module.vpc.vpc_id
+  private_subnet_ids    = module.vpc.private_subnet_ids
+  db_username           = var.db_username
+  db_password           = var.db_password
+  vpn_client_cidr_block = var.vpn_client_cidr_block
 }
 
 module "ecs" {
@@ -41,8 +42,10 @@ module "ecs" {
 module "alb" {
   source = "../modules/alb"
 
-  vpc_id            = module.vpc.vpc_id
-  public_subnet_ids = module.vpc.public_subnet_ids
+  vpc_id                = module.vpc.vpc_id
+  public_subnet_ids     = module.vpc.public_subnet_ids
+  private_subnet_ids    = module.vpc.private_subnet_ids
+  vpn_client_cidr_block = var.vpn_client_cidr_block
 }
 
 module "ecr" {
@@ -63,6 +66,13 @@ module "sns" {
   source = "../modules/sns"
 }
 
+module "vpn" {
+  source            = "../modules/vpn"
+  vpc_cidr          = module.vpc.vpc_cidr
+  subnet_ids        = module.vpc.private_subnet_ids
+  client_cidr_block = var.vpn_client_cidr_block
+}
+
 module "securityhub" {
   source = "../modules/securityhub"
 }
@@ -74,6 +84,26 @@ module "guardduty" {
 module "cloudtrail" {
   source  = "../modules/cloudtrail"
   s3_bucket_name = "simplyicard-cloudtrail-logs-prod"
+}
+
+resource "aws_route53_zone" "private" {
+  name = "ravik.site"
+
+  vpc {
+    vpc_id = module.vpc.vpc_id
+  }
+}
+
+resource "aws_route53_record" "simplyicard" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "simplyicard.ravik.site"
+  type    = "A"
+
+  alias {
+    name                   = module.alb.alb_dns_name
+    zone_id                = module.alb.alb_zone_id
+    evaluate_target_health = true
+  }
 }
 
 module "config" {
