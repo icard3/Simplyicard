@@ -59,6 +59,10 @@ module "frontend" {
   alb_dns_name = module.alb.alb_dns_name
 }
 
+module "sns" {
+  source = "../modules/sns"
+}
+
 module "securityhub" {
   source = "../modules/securityhub"
 }
@@ -68,10 +72,21 @@ module "guardduty" {
 }
 
 module "cloudtrail" {
-  source = "../modules/cloudtrail"
+  source  = "../modules/cloudtrail"
   s3_bucket_name = "simplyicard-cloudtrail-logs-prod"
 }
 
 module "config" {
-  source = "../modules/config"
+  source   = "../modules/config"
+  alarm_topic_arn = module.sns.topic_arn
+}
+
+module "cloudwatch" {
+  source          = "../modules/cloudwatch"
+  env             = "prod"
+  service_names   = ["simplyicard-app"]
+  alarm_topic_arn = module.sns.topic_arn
+  retention_days  = {
+    "simplyicard-app" = 30
+  }
 }

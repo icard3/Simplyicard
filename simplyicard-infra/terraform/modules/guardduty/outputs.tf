@@ -1,4 +1,4 @@
 output "guardduty_detector_id" {
-  description = "The ID of the GuardDuty detector"
-  value       = "" # Placeholder
+  description = "The ID of the GuardDuty detector."
+  value       = aws_guardduty_detector.main.id
 }

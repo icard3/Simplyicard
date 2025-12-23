@@ -1,5 +1,4 @@
 variable "s3_bucket_name" {
-  description = "S3 bucket for CloudTrail logs"
+  description = "The name of the S3 bucket to store CloudTrail logs."
   type        = string
-  default     = "" # Optional/Placeholder
 }
