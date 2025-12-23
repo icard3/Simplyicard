@@ -11,6 +11,9 @@ apt-get install -y wireguard
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 sysctl -p
 
+# Detect default network interface
+DEFAULT_IFACE=$(ip route show default | awk '/default/ {print $5}')
+
 # Generate server keys
 wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
 chmod 600 /etc/wireguard/server_private.key
@@ -24,8 +27,8 @@ cat > /etc/wireguard/wg0.conf <<EOF
 Address = ${wireguard_cidr}
 ListenPort = 51820
 PrivateKey = $SERVER_PRIVATE_KEY
-PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens5 -j MASQUERADE
-PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens5 -j MASQUERADE
+PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $DEFAULT_IFACE -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $DEFAULT_IFACE -j MASQUERADE
 EOF
 
 # Generate client configurations
