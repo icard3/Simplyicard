@@ -14,7 +14,6 @@ module "rds" {
   private_subnet_ids    = module.vpc.private_subnet_ids
   db_username           = var.db_username
   db_password           = var.db_password
-  vpn_client_cidr_block = var.vpn_client_cidr_block
 }
 
 module "ecs" {
@@ -45,7 +44,6 @@ module "alb" {
   vpc_id                = module.vpc.vpc_id
   public_subnet_ids     = module.vpc.public_subnet_ids
   private_subnet_ids    = module.vpc.private_subnet_ids
-  vpn_client_cidr_block = var.vpn_client_cidr_block
 }
 
 module "ecr" {
