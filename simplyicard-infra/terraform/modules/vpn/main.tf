@@ -71,7 +71,7 @@ resource "tls_cert_request" "client" {
 }
 
 resource "tls_locally_signed_cert" "client" {
-  cert_request_pem   = tls_cert_request.server.cert_request_pem # Simplified: use server request for common info or create new
+  cert_request_pem   = tls_cert_request.client.cert_request_pem
   ca_private_key_pem = tls_private_key.ca.private_key_pem
   ca_cert_pem        = tls_self_signed_cert.ca.cert_pem
 
