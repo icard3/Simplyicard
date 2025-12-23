@@ -11,8 +11,3 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "vpn_client_cidr_block" {
-  description = "CIDR block assigned to VPN clients"
-  type        = string
-  default     = "10.100.0.0/22"
-}
