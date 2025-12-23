@@ -66,11 +66,12 @@ module "sns" {
   source = "../modules/sns"
 }
 
-module "vpn" {
-  source            = "../modules/vpn"
-  vpc_cidr          = module.vpc.vpc_cidr
-  subnet_ids        = module.vpc.private_subnet_ids
-  client_cidr_block = var.vpn_client_cidr_block
+module "wireguard" {
+  source      = "../modules/wireguard"
+  vpc_id      = module.vpc.vpc_id
+  subnet_id   = module.vpc.public_subnet_ids[0]
+  vpc_cidr    = module.vpc.vpc_cidr
+  num_clients = 3
 }
 
 module "securityhub" {

@@ -13,15 +13,12 @@ output "rds_endpoint" {
   value       = module.rds.db_endpoint
 }
 
-output "vpn_dns_name" {
-  value = module.vpn.vpn_dns_name
+output "wireguard_server_ip" {
+  description = "Public IP of WireGuard VPN server"
+  value       = module.wireguard.wireguard_public_ip
 }
 
-output "vpn_client_cert" {
-  value = module.vpn.client_cert_pem
-}
-
-output "vpn_client_key" {
-  value     = module.vpn.client_private_key_pem
-  sensitive = true
+output "wireguard_instructions" {
+  description = "Instructions to get client configurations"
+  value       = module.wireguard.connection_instructions
 }
