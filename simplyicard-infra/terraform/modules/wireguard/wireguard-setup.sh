@@ -1,4 +1,5 @@
 #!/bin/bash
+# Version 1.1 (Force Rebuild)
 set -e
 
 # Redirect output to log file
