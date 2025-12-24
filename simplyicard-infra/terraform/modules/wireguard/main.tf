@@ -53,11 +53,22 @@ resource "aws_eip_association" "wireguard" {
   allocation_id = aws_eip.wireguard.id
 }
 
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "ssh" {
+  key_name   = "wireguard-ssh-key"
+  public_key = tls_private_key.ssh.public_key_openssh
+}
+
 resource "aws_instance" "wireguard" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   subnet_id     = var.subnet_id
   vpc_security_group_ids = [aws_security_group.wireguard.id]
+  key_name               = aws_key_pair.ssh.key_name
 
   user_data = templatefile("${path.module}/wireguard-setup.sh", {
     vpc_cidr          = var.vpc_cidr
