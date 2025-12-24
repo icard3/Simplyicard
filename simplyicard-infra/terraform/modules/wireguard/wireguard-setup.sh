@@ -1,5 +1,5 @@
 #!/bin/bash
-# Version 1.1 (Force Rebuild)
+# Version 1.2 (Fix IP address)
 set -e
 
 # Redirect output to log file
@@ -36,9 +36,13 @@ SERVER_PRIVATE_KEY=$(cat /etc/wireguard/server_private.key)
 SERVER_PUBLIC_KEY=$(cat /etc/wireguard/server_public.key)
 
 # Create server configuration
+# Extract network part and set Host IP to .1 (assuming /24)
+SERVER_NET=$(echo "${wireguard_cidr}" | cut -d'.' -f1-3)
+SERVER_IP="$SERVER_NET.1/24"
+
 cat > /etc/wireguard/wg0.conf <<EOF
 [Interface]
-Address = ${wireguard_cidr}
+Address = $SERVER_IP
 ListenPort = 51820
 PrivateKey = $SERVER_PRIVATE_KEY
 PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $DEFAULT_IFACE -j MASQUERADE
