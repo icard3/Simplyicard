@@ -1,11 +1,23 @@
 #!/bin/bash
 set -e
 
-# Update system
-apt-update && apt-get upgrade -y
+# Redirect output to log file
+exec > >(tee /var/log/wireguard-setup.log) 2>&1
 
-# Install WireGuard
-apt-get install -y wireguard
+echo "Starting WireGuard setup..."
+
+# valid update command with retry
+for i in {1..5}; do
+  apt-get update && break || sleep 15
+done
+
+# Install WireGuard with retry
+DEBIAN_FRONTEND=noninteractive apt-get install -y wireguard || {
+  echo "Failed to install wireguard, retrying..."
+  sleep 10
+  apt-get update
+  DEBIAN_FRONTEND=noninteractive apt-get install -y wireguard
+}
 
 # Enable IP forwarding
 echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
@@ -13,6 +25,7 @@ sysctl -p
 
 # Detect default network interface
 DEFAULT_IFACE=$(ip route show default | awk '/default/ {print $5}')
+echo "Detected default interface: $DEFAULT_IFACE"
 
 # Generate server keys
 wg genkey | tee /etc/wireguard/server_private.key | wg pubkey > /etc/wireguard/server_public.key
@@ -30,6 +43,10 @@ PrivateKey = $SERVER_PRIVATE_KEY
 PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $DEFAULT_IFACE -j MASQUERADE
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $DEFAULT_IFACE -j MASQUERADE
 EOF
+
+# Get public IP
+PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+echo "Public IP: $PUBLIC_IP"
 
 # Generate client configurations
 for i in $(seq 1 ${num_clients}); do
@@ -54,12 +71,13 @@ DNS = 10.0.0.2
 
 [Peer]
 PublicKey = $SERVER_PUBLIC_KEY
-Endpoint = $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):51820
+Endpoint = $PUBLIC_IP:51820
 AllowedIPs = ${vpc_cidr}
 PersistentKeepalive = 25
 EOF
 
   chmod 600 /root/wg-client-$i.conf
+  echo "Generated config for client $i"
 done
 
 # Start WireGuard
