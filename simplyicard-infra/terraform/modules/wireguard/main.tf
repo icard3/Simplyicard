@@ -70,6 +70,7 @@ resource "aws_instance" "wireguard" {
   vpc_security_group_ids = [aws_security_group.wireguard.id]
   key_name               = aws_key_pair.ssh.key_name
   user_data_replace_on_change = true
+  source_dest_check      = false
 
   user_data = templatefile("${path.module}/wireguard-setup.sh", {
     vpc_cidr          = var.vpc_cidr
