@@ -66,9 +66,9 @@ resource "aws_key_pair" "ssh" {
 resource "aws_instance" "wireguard" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  subnet_id     = var.subnet_id
   vpc_security_group_ids = [aws_security_group.wireguard.id]
   key_name               = aws_key_pair.ssh.key_name
+  user_data_replace_on_change = true
 
   user_data = templatefile("${path.module}/wireguard-setup.sh", {
     vpc_cidr          = var.vpc_cidr
