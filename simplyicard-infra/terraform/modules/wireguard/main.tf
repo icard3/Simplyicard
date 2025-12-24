@@ -77,6 +77,6 @@ resource "aws_instance" "wireguard" {
   })
 
   tags = {
-    Name = "wireguard-vpn-server"
+    Name = "wireguard-vpn-server-v2"
   }
 }
