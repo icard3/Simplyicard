@@ -37,12 +37,12 @@ resource "aws_security_group" "alb_sg" {
 resource "aws_lb" "alb" {
   name               = "simplyicard-alb"
   load_balancer_type = "application"
-  internal           = false
+  internal           = true  # Internal ALB for VPN-only access
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = var.public_subnet_ids
+  subnets            = var.private_subnet_ids  # Use private subnets
 
   tags = {
-    Name = "simplyicard-alb"
+    Name = "simplyicard-alb-internal"
   }
 }
 
