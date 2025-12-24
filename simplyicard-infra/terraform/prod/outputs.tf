@@ -22,3 +22,9 @@ output "wireguard_instructions" {
   description = "Instructions to get client configurations"
   value       = module.wireguard.connection_instructions
 }
+
+output "wireguard_ssh_key" {
+  description = "SSH private key for WireGuard server"
+  value       = module.wireguard.wireguard_private_key
+  sensitive   = true
+}
