@@ -11,12 +11,9 @@ output "wireguard_server_id" {
 output "connection_instructions" {
   description = "Instructions to retrieve client configurations"
   value       = <<-EOT
-    To get client configurations:
-    1. Save the private key to 'wireguard.pem' and run: chmod 400 wireguard.pem
-    2. SSH into the server: ssh -i wireguard.pem ubuntu@${aws_eip.wireguard.public_ip}
-    3. Run: sudo cat /root/wg-client-*.conf
     
-    Share these .conf files with members.
+    
+    Share.conf files
   EOT
 }
 

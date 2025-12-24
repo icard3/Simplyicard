@@ -4,21 +4,21 @@ resource "aws_security_group" "alb_sg" {
   description = "Allow HTTP and HTTPS traffic"
   vpc_id      = var.vpc_id
 
-  # TEMPORARY: Allow public access for demo (restrict after demo)
+  # Allow HTTP/HTTPS only from VPC (VPN-routed traffic)
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTP from anywhere (TEMPORARY FOR DEMO)"
+    cidr_blocks = ["10.0.0.0/16"]
+    description = "HTTP from VPC/VPN only"
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTPS from anywhere (TEMPORARY FOR DEMO)"
+    cidr_blocks = ["10.0.0.0/16"]
+    description = "HTTPS from VPC/VPN only"
   }
 
   egress {
