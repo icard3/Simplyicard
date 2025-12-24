@@ -9,7 +9,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "wireguard" {
-  name        = "wireguard-vpn-sg"
+  name        = "wireguard-vpn-sg-v2"
   description = "Security group for WireGuard VPN server"
   vpc_id      = var.vpc_id
 
