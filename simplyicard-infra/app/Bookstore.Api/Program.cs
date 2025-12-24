@@ -128,8 +128,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Health check endpoint
-app.MapGet("/", () => "Healthy");
+// Health check endpoint (moved from / to /health)
+app.MapGet("/health", () => "Healthy");
 
 // Seed the database
 using (var scope = app.Services.CreateScope())
@@ -137,5 +137,8 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<BookstoreContext>();
     context.Database.EnsureCreated();
 }
+
+// Fallback to index.html for React SPA routing
+app.MapFallbackToFile("index.html");
 
 app.Run();
