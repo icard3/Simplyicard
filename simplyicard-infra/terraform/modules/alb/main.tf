@@ -4,21 +4,21 @@ resource "aws_security_group" "alb_sg" {
   description = "Allow HTTP and HTTPS traffic"
   vpc_id      = var.vpc_id
 
-  # Allow HTTP/HTTPS only from WireGuard VPN
+  # Allow HTTP/HTTPS from VPC (includes VPN-routed traffic)
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["10.100.0.0/22"]  # WireGuard VPN CIDR
-    description = "HTTP from WireGuard VPN"
+    cidr_blocks = ["10.0.0.0/16"]  # VPC CIDR (includes WireGuard routed traffic)
+    description = "HTTP from VPC/VPN"
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["10.100.0.0/22"]  # WireGuard VPN CIDR
-    description = "HTTPS from WireGuard VPN"
+    cidr_blocks = ["10.0.0.0/16"]  # VPC CIDR (includes WireGuard routed traffic)
+    description = "HTTPS from VPC/VPN"
   }
 
   egress {
