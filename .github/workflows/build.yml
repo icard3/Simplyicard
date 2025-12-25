@@ -40,25 +40,12 @@ jobs:
           ECR_REPOSITORY: simplyicard-app
           IMAGE_TAG: latest
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./simplyicard-infra/app/Bookstore.Api
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./simplyicard-infra/app/Dockerfile ./simplyicard-infra/app
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Update ECS Service
         run: |
           aws ecs update-service --cluster simplyicard-cluster --service simplyicard-cluster-service --force-new-deployment
 
-      # --- FRONTEND DEPLOYMENT ---
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Build Frontend
-        working-directory: ./simplyicard-infra/app/bookstore-frontend
-        run: |
-          npm install
-          npm run build
-
-      - name: Deploy Frontend to S3
-        run: |
-          aws s3 sync ./simplyicard-infra/app/bookstore-frontend/build/ s3://simplyicard-bookstore-frontend-prod --delete
+      # --- FRONTEND DEPLOYMENT (Now handled by Dockerfile) ---
+      # Steps removed as they are integrated into the Docker build
