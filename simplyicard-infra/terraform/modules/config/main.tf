@@ -18,6 +18,11 @@ resource "aws_config_delivery_channel" "main" {
   name           = "simplyicard-config-channel"
   s3_bucket_name = aws_s3_bucket.config_bucket.id
   sns_topic_arn  = var.alarm_topic_arn
+
+  depends_on = [
+    aws_config_configuration_recorder.main,
+    aws_s3_bucket_policy.config_bucket_policy
+  ]
 }
 
 resource "aws_s3_bucket" "config_bucket" {
