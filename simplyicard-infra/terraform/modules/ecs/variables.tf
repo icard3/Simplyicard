@@ -67,3 +67,15 @@ variable "alb_security_group_id" {
   description = "The ID of the ALB security group"
   type        = string
 }
+
+variable "log_group_name" {
+  description = "Name of the CloudWatch log group"
+  type        = string
+  default     = ""
+}
+
+variable "region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-east-1"
+}

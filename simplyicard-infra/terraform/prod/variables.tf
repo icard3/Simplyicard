@@ -10,4 +10,8 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
-
+variable "certificate_arn" {
+  description = "ARN of the SSL certificate"
+  type        = string
+  default     = ""
+}
