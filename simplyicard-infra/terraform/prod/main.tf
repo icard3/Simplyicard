@@ -89,7 +89,7 @@ module "cloudtrail" {
 }
 
 resource "aws_route53_zone" "private" {
-  name = "ravik.site"
+  name = "dheera82s.online"
 
   vpc {
     vpc_id = module.vpc.vpc_id
@@ -98,7 +98,7 @@ resource "aws_route53_zone" "private" {
 
 resource "aws_route53_record" "simplyicard" {
   zone_id = aws_route53_zone.private.zone_id
-  name    = "simplyicard.ravik.site"
+  name    = "simplyicard.dheera82s.online"
   type    = "A"
 
   alias {
