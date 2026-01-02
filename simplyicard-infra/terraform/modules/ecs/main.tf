@@ -56,6 +56,8 @@ resource "aws_autoscaling_group" "ecs_asg" {
     version = "$Latest"
   }
 
+  force_delete = true
+
   tag {
     key                 = "Name"
     value               = "${var.cluster_name}-ecs"

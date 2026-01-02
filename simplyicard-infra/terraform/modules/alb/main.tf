@@ -65,6 +65,8 @@ resource "aws_lb_target_group" "tg" {
     matcher             = "200"
   }
 
+  deregistration_delay = 30
+
   lifecycle {
     create_before_destroy = true
   }
