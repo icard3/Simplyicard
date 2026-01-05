@@ -63,3 +63,11 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
           TF_VAR_certificate_arn: ${{ secrets.CERTIFICATE_ARN }}
         run: terraform apply -auto-approve tfplan
+
+      - name: Output WireGuard SSH Key
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "=== BEGIN WIREGUARD SSH PRIVATE KEY ==="
+          terraform output -raw wireguard_ssh_key
+          echo ""
+          echo "=== END WIREGUARD SSH PRIVATE KEY ==="
