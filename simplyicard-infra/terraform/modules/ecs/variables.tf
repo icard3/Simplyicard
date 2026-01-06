@@ -79,3 +79,9 @@ variable "region" {
   type        = string
   default     = "us-east-1"
 }
+
+variable "alb_id" {
+  description = "The ID of the ALB to create an explicit dependency"
+  type        = string
+  default     = ""
+}

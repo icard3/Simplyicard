@@ -40,11 +40,49 @@ resource "aws_lb" "alb" {
   internal           = true  # Internal ALB for VPN-only access
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = var.private_subnet_ids  # Use private subnets
+  
+  access_logs {
+    bucket  = aws_s3_bucket.alb_logs.id
+    prefix  = "alb-logs"
+    enabled = true
+  }
 
   tags = {
     Name = "simplyicard-alb-internal"
   }
 }
+
+# S3 Bucket for ALB Logs
+resource "aws_s3_bucket" "alb_logs" {
+  bucket        = "simplyicard-alb-logs-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
+
+  tags = {
+    Name        = "simplyicard-alb-logs"
+    Environment = "prod"
+  }
+}
+
+resource "aws_s3_bucket_policy" "alb_logs_policy" {
+  bucket = aws_s3_bucket.alb_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_elb_service_account.main.id}:root"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.alb_logs.arn}/alb-logs/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+      }
+    ]
+  })
+}
+
+data "aws_elb_service_account" "main" {}
+data "aws_caller_identity" "current" {}
 
 # TARGET GROUP
 resource "aws_lb_target_group" "tg" {

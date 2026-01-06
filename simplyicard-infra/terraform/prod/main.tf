@@ -24,6 +24,7 @@ module "ecs" {
   private_subnet_ids    = module.vpc.private_subnet_ids
   target_group_arn      = module.alb.target_group_arn
   alb_security_group_id = module.alb.alb_security_group_id
+  alb_id                = module.alb.alb_id
   container_image       = "${module.ecr.repository_urls["simplyicard-app"]}:latest"
   log_group_name        = "/ecs/prod-simplyicard-app"
   region                = "us-east-1"
@@ -68,11 +69,12 @@ module "sns" {
 }
 
 module "wireguard" {
-  source      = "../modules/wireguard"
-  vpc_id      = module.vpc.vpc_id
-  subnet_id   = module.vpc.public_subnet_ids[0]
-  vpc_cidr    = module.vpc.vpc_cidr
-  num_clients = 3
+  source          = "../modules/wireguard"
+  vpc_id          = module.vpc.vpc_id
+  subnet_id       = module.vpc.public_subnet_ids[0]
+  vpc_cidr        = module.vpc.vpc_cidr
+  num_clients     = 3
+  alarm_topic_arn = module.sns.topic_arn
 }
 
 module "securityhub" {
@@ -80,7 +82,8 @@ module "securityhub" {
 }
 
 module "guardduty" {
-  source = "../modules/guardduty"
+  source          = "../modules/guardduty"
+  alarm_topic_arn = module.sns.topic_arn
 }
 
 module "cloudtrail" {

@@ -82,3 +82,21 @@ resource "aws_instance" "wireguard" {
     Name = "wireguard-vpn-server-v2"
   }
 }
+
+resource "aws_cloudwatch_metric_alarm" "wireguard_cpu" {
+  count               = var.alarm_topic_arn != "" ? 1 : 0
+  alarm_name          = "wireguard-cpu-high"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "300"
+  statistic           = "Average"
+  threshold           = "80"
+  alarm_description   = "This metric monitors ec2 cpu utilization"
+  alarm_actions       = [var.alarm_topic_arn]
+
+  dimensions = {
+    InstanceId = aws_instance.wireguard.id
+  }
+}

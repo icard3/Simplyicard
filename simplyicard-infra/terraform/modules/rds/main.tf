@@ -45,6 +45,27 @@ resource "aws_security_group" "rds_sg" {
 }
 
 
+# IAM Role for RDS Enhanced Monitoring
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  name = "simplyicard-rds-enhanced-monitoring-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "monitoring.rds.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
+  role       = aws_iam_role.rds_enhanced_monitoring.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
 # RDS Instance
 
 resource "aws_db_instance" "rds_instance" {
@@ -61,6 +82,13 @@ resource "aws_db_instance" "rds_instance" {
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
   skip_final_snapshot = true
+
+  # Monitoring & Logging
+  enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
+  monitoring_interval             = 60
+  monitoring_role_arn             = aws_iam_role.rds_enhanced_monitoring.arn
+  performance_insights_enabled    = true
+  performance_insights_retention_period = 7 # Default is 7 days for free tier
 
   tags = {
     Name = "simplyicard-rds-instance"

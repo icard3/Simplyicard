@@ -186,7 +186,8 @@ resource "aws_ecs_service" "app" {
   }
 
   depends_on = [
-    aws_autoscaling_group.ecs_asg
+    aws_autoscaling_group.ecs_asg,
+    var.alb_id
   ]
 }
 

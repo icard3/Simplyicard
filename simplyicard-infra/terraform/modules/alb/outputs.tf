@@ -17,3 +17,8 @@ output "alb_security_group_id" {
   description = "The ID of the ALB security group"
   value       = aws_security_group.alb_sg.id
 }
+
+output "alb_id" {
+  description = "The ID of the ALB"
+  value       = aws_lb.alb.id
+}

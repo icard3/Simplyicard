@@ -24,3 +24,9 @@ variable "num_clients" {
   type        = number
   default     = 3
 }
+
+variable "alarm_topic_arn" {
+  description = "SNS topic ARN for alerts"
+  type        = string
+  default     = ""
+}
