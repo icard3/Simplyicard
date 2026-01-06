@@ -3,3 +3,9 @@ variable "alarm_topic_arn" {
   type        = string
   default     = ""
 }
+
+variable "enable_alarms" {
+  description = "Enable CloudWatch Alarms/Events for GuardDuty"
+  type        = bool
+  default     = false
+}

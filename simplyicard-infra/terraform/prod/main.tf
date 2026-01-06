@@ -75,6 +75,7 @@ module "wireguard" {
   vpc_cidr        = module.vpc.vpc_cidr
   num_clients     = 3
   alarm_topic_arn = module.sns.topic_arn
+  enable_alarms   = true
 }
 
 module "securityhub" {
@@ -84,6 +85,7 @@ module "securityhub" {
 module "guardduty" {
   source          = "../modules/guardduty"
   alarm_topic_arn = module.sns.topic_arn
+  enable_alarms   = true
 }
 
 module "cloudtrail" {

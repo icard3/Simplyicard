@@ -84,7 +84,7 @@ resource "aws_instance" "wireguard" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "wireguard_cpu" {
-  count               = var.alarm_topic_arn != "" ? 1 : 0
+  count               = var.enable_alarms ? 1 : 0
   alarm_name          = "wireguard-cpu-high"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"

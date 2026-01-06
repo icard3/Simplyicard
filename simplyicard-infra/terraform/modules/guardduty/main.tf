@@ -27,7 +27,7 @@ resource "aws_guardduty_detector" "main" {
 
 # CloudWatch Event Rule for GuardDuty Findings
 resource "aws_cloudwatch_event_rule" "guardduty_findings" {
-  count       = var.alarm_topic_arn != "" ? 1 : 0
+  count       = var.enable_alarms ? 1 : 0
   name        = "guardduty-findings-rule"
   description = "Sends GuardDuty findings to SNS"
 
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_event_rule" "guardduty_findings" {
 }
 
 resource "aws_cloudwatch_event_target" "sns" {
-  count     = var.alarm_topic_arn != "" ? 1 : 0
+  count     = var.enable_alarms ? 1 : 0
   rule      = aws_cloudwatch_event_rule.guardduty_findings[0].name
   target_id = "SendToSNS"
   arn       = var.alarm_topic_arn

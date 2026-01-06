@@ -30,3 +30,9 @@ variable "alarm_topic_arn" {
   type        = string
   default     = ""
 }
+
+variable "enable_alarms" {
+  description = "Enable CloudWatch Alarms for WireGuard"
+  type        = bool
+  default     = false
+}
