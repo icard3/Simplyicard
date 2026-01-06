@@ -87,8 +87,6 @@ resource "aws_db_instance" "rds_instance" {
   enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
   monitoring_interval             = 60
   monitoring_role_arn             = aws_iam_role.rds_enhanced_monitoring.arn
-  performance_insights_enabled    = true
-  performance_insights_retention_period = 7 # Default is 7 days for free tier
 
   tags = {
     Name = "simplyicard-rds-instance"
