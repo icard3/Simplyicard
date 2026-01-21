@@ -1,5 +1,6 @@
 # Local .terraform directories
 **/.terraform/*
+simplyicard-infra/docs
 
 # .tfstate files
 *.tfstate

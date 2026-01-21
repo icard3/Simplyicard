@@ -189,6 +189,10 @@ resource "aws_ecs_service" "app" {
     aws_autoscaling_group.ecs_asg,
     var.alb_id
   ]
+
+  timeouts {
+    delete = "30m"  # Allow ECS more time to drain tasks during destroy
+  }
 }
 
 

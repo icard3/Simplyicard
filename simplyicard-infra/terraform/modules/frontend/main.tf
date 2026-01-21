@@ -75,6 +75,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
+  wait_for_deployment = false  # Speed up terraform destroy by not waiting for global propagation
 
   # Fix for React routing (SPA)
   custom_error_response {
